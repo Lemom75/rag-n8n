@@ -58,7 +58,7 @@ def ask_qna(request: AskRequest):
             temperature=0.3
         )
 
-       try:
+try:
     return {"answer": completion.choices[0].message.content}
 except Exception as err:
     print("Réponse OpenAI brute :", completion)
