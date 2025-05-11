@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 from dotenv import load_dotenv
@@ -42,7 +42,7 @@ def ask_qna(request: AskRequest):
             top_k=request.top_k,
             include_metadata=True
         )
-        contexts = [m.metadata["text"] for m in result.matches]
+        contexts = [m.metadata["content"] for m in result.matches]
         context_str = "\n\n".join(contexts)
 
         # 3. Completion with context
@@ -58,8 +58,7 @@ def ask_qna(request: AskRequest):
             temperature=0.3
         )
 
-try:
-    return {"answer": completion.choices[0].message.content}
-except Exception as err:
-    print("Réponse OpenAI brute :", completion)
-    return {"answer": f"Erreur côté API (structure inattendue): {str(err)}"}
+        return {"answer": completion.choices[0].message.content}
+
+    except Exception as e:
+        return {"answer": f"Erreur côté API : {str(e)}"}
